@@ -1,4 +1,4 @@
-# Code Quality Intelligence Agent
+# CodeAnalyzer Pro
 
 An AI-powered code analysis tool that provides comprehensive code quality insights, automated issue detection, and interactive Q&A capabilities with a professional CLI interface.
 
@@ -20,13 +20,13 @@ An AI-powered code analysis tool that provides comprehensive code quality insigh
 #### Option 1: Docker Compose (Easiest!)
 ```bash
 # One command to run everything
-docker-compose up code-quality-agent
+docker-compose up code-analyzer-pro
 ```
 
 #### Option 2: Simple Docker Run
 ```bash
 # Run with pre-built image
-docker run --rm -it atlan-code-quality-agent-light \
+docker run --rm -it code-analyzer-pro \
   python -m code_quality_agent chat https://github.com/username/repo
 ```
 
@@ -232,23 +232,23 @@ WEB_PORT=8000
 #### Simple Usage (Recommended)
 ```bash
 # Use Docker Compose (easiest)
-docker-compose up code-quality-agent
+docker-compose up code-analyzer-pro
 
 # Or simple Docker run
-docker run --rm -it atlan-code-quality-agent-light \
+docker run --rm -it code-analyzer-pro \
   python -m code_quality_agent chat https://github.com/username/repo
 ```
 
 #### Advanced Usage (if needed)
 ```bash
 # Build the image
-docker build -t code-quality-agent .
+docker build -t code-analyzer-pro .
 
 # Run with custom settings
 docker run --rm -it --memory=1g --memory-swap=1g \
   -v ${PWD}:/workspace:ro \
   -v ${PWD}/.env:/app/.env:ro \
-  code-quality-agent \
+  code-analyzer-pro \
   python -m code_quality_agent chat https://github.com/username/repo
 ```
 

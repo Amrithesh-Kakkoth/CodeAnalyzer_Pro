@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Setup script for Code Quality Intelligence Agent
+Setup script for CodeAnalyzer Pro
 Creates .env file with user-provided configuration
 """
 
@@ -91,7 +91,7 @@ MKL_NUM_THREADS=1
 
 def main():
     """Main setup function."""
-    print("🚀 Code Quality Intelligence Agent Setup")
+    print("🚀 CodeAnalyzer Pro Setup")
     print("=" * 50)
     
     # Check if .env already exists

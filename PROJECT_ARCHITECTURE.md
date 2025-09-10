@@ -1,4 +1,4 @@
-# 🏗️ Code Quality Intelligence Agent - Project Architecture
+# 🏗️ CodeAnalyzer Pro - Project Architecture
 
 ## 📋 Table of Contents
 1. [Project Overview](#project-overview)
@@ -13,7 +13,7 @@
 
 ## 🎯 Project Overview
 
-The **Code Quality Intelligence Agent** is an AI-powered system that analyzes code repositories to provide comprehensive quality insights, security assessments, and architectural recommendations. It goes beyond traditional linting by understanding code relationships, dependencies, and providing conversational Q&A capabilities.
+The **CodeAnalyzer Pro** is an AI-powered system that analyzes code repositories to provide comprehensive quality insights, security assessments, and architectural recommendations. It goes beyond traditional linting by understanding code relationships, dependencies, and providing conversational Q&A capabilities.
 
 ### Key Features
 - **Multi-language Support**: Python, JavaScript, TypeScript

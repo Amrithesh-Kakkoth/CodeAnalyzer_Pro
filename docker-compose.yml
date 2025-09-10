@@ -1,7 +1,7 @@
 services:
-  code-quality-agent:
+  code-analyzer-pro:
     build: .
-    container_name: code-quality-agent
+    container_name: code-analyzer-pro
     volumes:
       # Mount your code directory for analysis
       - ./:/workspace:ro
@@ -29,9 +29,9 @@ services:
     restart: unless-stopped
 
   # Alternative service for analysis mode
-  code-quality-analyzer:
+  code-analyzer-pro-analyzer:
     build: .
-    container_name: code-quality-analyzer
+    container_name: code-analyzer-pro-analyzer
     volumes:
       - ./:/workspace:ro
       - ./data:/app/data
