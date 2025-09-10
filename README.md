@@ -1,25 +1,32 @@
 # Code Quality Intelligence Agent
 
-An AI-powered code analysis tool that provides comprehensive code quality insights, automated issue detection, and interactive Q&A capabilities.
+An AI-powered code analysis tool that provides comprehensive code quality insights, automated issue detection, and interactive Q&A capabilities with a professional CLI interface.
 
 ## ✨ Features
 
 - **Multi-Language Support**: Python, JavaScript, TypeScript
-- **AI-Powered Analysis**: Advanced code quality assessment
+- **AI-Powered Analysis**: Advanced code quality assessment with AST parsing
+- **Professional CLI Interface**: Beautiful, interactive command-line experience
 - **Interactive Q&A**: Chat with AI about your codebase
-- **GitHub Integration**: Analyze remote repositories
-- **Web Interface**: User-friendly web dashboard
-- **RAG System**: Intelligent code understanding
-- **Free LLM Support**: Powered by Groq (free tier)
+- **GitHub Integration**: Analyze remote repositories directly from URLs
+- **Enhanced RAG System**: Intelligent code understanding with entity extraction
+- **Docker Support**: Containerized deployment with memory optimization
+- **Free LLM Support**: Powered by Groq (free tier) with OpenAI fallback
 
 ## 🚀 Quick Start
 
-### One-Click Launch
+### Docker (Recommended)
 ```bash
-python launcher.py
+# Build and run with Docker
+docker build -t code-quality-agent .
+docker run --rm -it --memory=1g --memory-swap=1g \
+  -v ${PWD}:/workspace:ro \
+  -v ${PWD}/.env:/app/.env:ro \
+  code-quality-agent \
+  python -m code_quality_agent chat https://github.com/username/repo
 ```
 
-### Manual Setup
+### Local Installation
 1. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
@@ -27,24 +34,48 @@ python launcher.py
 
 2. **Configure API key**:
    - Get a free API key from [Groq Console](https://console.groq.com/)
-   - Set it in your `.env` file:
+   - Create `.env` file:
      ```env
      GROQ_API_KEY=your_groq_api_key_here
+     OPENAI_API_KEY=your_openai_key_here
      ```
 
-3. **Start the web interface**:
+3. **Start interactive chat**:
    ```bash
-   python -m code_quality_agent web
+   python -m code_quality_agent chat https://github.com/username/repo
    ```
 
 ## 📖 Usage
 
-### Web Interface
-- Open `http://localhost:8000` in your browser
-- Upload code files or analyze GitHub repositories
-- Chat with AI about your code
+### Interactive CLI (Primary Interface)
 
-### Command Line
+#### Professional Chat Interface
+```bash
+# Analyze GitHub repository with interactive chat
+python -m code_quality_agent chat https://github.com/username/repo
+
+# Analyze local codebase with interactive chat
+python -m code_quality_agent chat /path/to/code
+```
+
+**Features:**
+- 🎨 **Beautiful CLI UI** with professional panels and colors
+- 💬 **Interactive Q&A** - Ask natural language questions
+- 🔍 **Built-in Commands** - `analyze`, `security`, `performance`, `help`
+- 📊 **Real-time Analysis** - Live code quality metrics
+- 🚀 **GitHub Integration** - Direct URL analysis
+
+#### Available Commands in Chat
+- `analyze` - Run comprehensive code quality analysis
+- `security` - Check for security vulnerabilities
+- `performance` - Identify performance bottlenecks
+- `complexity` - Analyze code complexity
+- `documentation` - Review documentation gaps
+- `testing` - Assess testing coverage
+- `help` - Show detailed command reference
+- `quit` - Exit the application
+
+### Command Line Analysis
 
 #### Analyze Local Code
 ```bash
@@ -122,6 +153,32 @@ WEB_PORT=8000
 - **Local Embeddings**: Free vector embeddings
 - **LangChain**: AI framework integration
 
+## 🏗️ Architecture & Improvements
+
+### Enhanced CLI Interface
+- **Professional UI Design**: Beautiful panels with Rich library styling
+- **Interactive Commands**: Built-in commands for analysis, security, performance
+- **Real-time Feedback**: Live progress indicators and status updates
+- **Color-coded Output**: Professional color scheme for better readability
+
+### Advanced RAG System
+- **Entity Extraction**: AST-based code entity identification
+- **Relationship Mapping**: Code dependency and call chain analysis
+- **Enhanced Metadata**: Comprehensive code context for AI responses
+- **Vector Database**: ChromaDB for efficient similarity search
+
+### Memory Optimization
+- **Docker Memory Limits**: Optimized for 1GB RAM usage
+- **CPU-only PyTorch**: Reduced memory footprint
+- **Environment Variables**: Memory optimization settings
+- **Lightweight Dependencies**: Minimal package requirements
+
+### GitHub Integration
+- **Direct URL Analysis**: Analyze repositories without cloning locally
+- **Automatic Download**: Temporary repository cloning and cleanup
+- **Repository Metadata**: Stars, forks, language detection
+- **Path Resolution**: Automatic path handling for downloaded repos
+
 ## 📊 Analysis Features
 
 ### Code Quality Metrics
@@ -138,14 +195,33 @@ WEB_PORT=8000
 - **Best Practices**: Coding standard violations
 - **Severity Scoring**: P0-P4 priority levels
 
-## 🌐 Web Interface
+## 🐳 Docker Deployment
 
-The web interface provides:
-- **File Upload**: Drag-and-drop code analysis
-- **Real-time Results**: Instant quality reports
-- **Interactive Chat**: AI-powered code Q&A
-- **Visualization**: Charts and graphs
-- **Export Options**: JSON, HTML, Markdown
+### Containerized Setup
+- **Memory Optimized**: Runs efficiently with 1GB RAM
+- **Environment Isolation**: Clean, reproducible environment
+- **Volume Mounting**: Access to local code and configuration
+- **Multi-platform**: Works on Windows, macOS, and Linux
+
+### Docker Commands
+```bash
+# Build the image
+docker build -t code-quality-agent .
+
+# Run interactive chat
+docker run --rm -it --memory=1g --memory-swap=1g \
+  -v ${PWD}:/workspace:ro \
+  -v ${PWD}/.env:/app/.env:ro \
+  code-quality-agent \
+  python -m code_quality_agent chat https://github.com/username/repo
+
+# Run analysis only
+docker run --rm --memory=1g --memory-swap=1g \
+  -v ${PWD}:/workspace:ro \
+  -v ${PWD}/.env:/app/.env:ro \
+  code-quality-agent \
+  python -m code_quality_agent analyze https://github.com/username/repo
+```
 
 ## 🔍 RAG System
 

@@ -19,10 +19,13 @@ The **Code Quality Intelligence Agent** is an AI-powered system that analyzes co
 - **Multi-language Support**: Python, JavaScript, TypeScript
 - **AST Parsing**: Deep structural analysis of code
 - **RAG System**: Retrieval-Augmented Generation for context-aware responses
+- **Professional CLI Interface**: Beautiful, interactive command-line experience
 - **Security Analysis**: Vulnerability detection and risk assessment
 - **Performance Analysis**: Bottleneck identification and optimization suggestions
 - **Interactive Q&A**: Natural language queries about codebase
 - **GitHub Integration**: Direct repository analysis from URLs
+- **Docker Support**: Containerized deployment with memory optimization
+- **Memory Optimization**: Efficient resource usage with 1GB RAM limits
 
 ---
 
@@ -81,6 +84,83 @@ graph TB
     VECTOR_DB --> CHROMA_DB
     CODE_STRUCTURE --> FILE_SYSTEM
 ```
+
+---
+
+## 🖥️ CLI Architecture
+
+### Enhanced Interactive CLI Design
+
+The new CLI interface provides a professional, user-friendly experience with the following architectural improvements:
+
+```mermaid
+graph TB
+    subgraph "CLI Interface Layer"
+        WELCOME[Welcome Screen]
+        HELP[Help System]
+        INPUT[Input Handler]
+        OUTPUT[Output Renderer]
+    end
+    
+    subgraph "Command Processing"
+        COMMAND_DETECTOR[Command Detector]
+        ANALYZE_CMD[Analyze Command]
+        CHAT_CMD[Chat Commands]
+        UTILITY_CMD[Utility Commands]
+    end
+    
+    subgraph "UI Components"
+        PANELS[Rich Panels]
+        TABLES[Data Tables]
+        PROGRESS[Progress Indicators]
+        COLORS[Color Schemes]
+    end
+    
+    subgraph "Path Resolution"
+        GITHUB_PATH[GitHub Path Handler]
+        LOCAL_PATH[Local Path Handler]
+        TEMP_CLEANUP[Temp Cleanup]
+    end
+    
+    WELCOME --> PANELS
+    HELP --> PANELS
+    INPUT --> COMMAND_DETECTOR
+    COMMAND_DETECTOR --> ANALYZE_CMD
+    COMMAND_DETECTOR --> CHAT_CMD
+    COMMAND_DETECTOR --> UTILITY_CMD
+    ANALYZE_CMD --> GITHUB_PATH
+    ANALYZE_CMD --> LOCAL_PATH
+    OUTPUT --> TABLES
+    OUTPUT --> PROGRESS
+    OUTPUT --> COLORS
+    GITHUB_PATH --> TEMP_CLEANUP
+```
+
+### Key Architectural Improvements
+
+#### 1. Professional UI Design
+- **Rich Library Integration**: Beautiful panels, tables, and progress indicators
+- **Color-coded Output**: Professional color scheme for better readability
+- **Responsive Layout**: Adaptive panels based on terminal size
+- **Consistent Styling**: Unified design language throughout
+
+#### 2. Command Processing Architecture
+- **Command Detection**: Smart detection of commands vs. natural language questions
+- **Path Resolution**: Automatic handling of GitHub URLs vs. local paths
+- **Error Handling**: Graceful error display with professional formatting
+- **State Management**: Proper initialization and cleanup of components
+
+#### 3. Memory Optimization
+- **Docker Memory Limits**: Optimized for 1GB RAM usage
+- **Environment Variables**: Memory optimization settings
+- **Resource Cleanup**: Automatic cleanup of temporary files
+- **Efficient Processing**: Streamlined operations to reduce memory footprint
+
+#### 4. GitHub Integration
+- **Direct URL Analysis**: Seamless GitHub repository analysis
+- **Automatic Download**: Temporary repository cloning and cleanup
+- **Path Resolution**: Automatic path handling for downloaded repositories
+- **Metadata Extraction**: Repository information display
 
 ---
 
