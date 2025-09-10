@@ -168,7 +168,7 @@ WEB_PORT=8000
 - **`qa_agent.py`**: AI-powered Q&A system
 - **`rag_system.py`**: Retrieval-Augmented Generation
 - **`github_analyzer.py`**: GitHub repository integration
-- **`web_app.py`**: FastAPI web interface
+- **`interactive_cli.py`**: Professional CLI interface
 - **`cli.py`**: Command-line interface
 
 ### AI Integration
@@ -297,7 +297,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Groq**: For providing free LLM access
 - **LangChain**: For AI framework capabilities
 - **ChromaDB**: For vector storage
-- **FastAPI**: For web framework
 - **Rich**: For beautiful CLI output
 
 ## 📞 Support

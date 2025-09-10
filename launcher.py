@@ -25,7 +25,7 @@ def check_dependencies():
     required_packages = [
         'langchain', 'langchain_community', 'langchain_groq',
         'groq', 'chromadb', 'sentence_transformers',
-        'fastapi', 'uvicorn', 'streamlit', 'rich', 'click'
+        'rich', 'click', 'pydantic', 'python-dotenv'
     ]
     
     missing_packages = []
