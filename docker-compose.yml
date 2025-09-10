@@ -1,0 +1,52 @@
+services:
+  code-quality-agent:
+    build: .
+    container_name: code-quality-agent
+    volumes:
+      # Mount your code directory for analysis
+      - ./:/workspace:ro
+      # Persist vector databases
+      - ./data:/app/data
+      # Mount environment file
+      - ./.env:/app/.env:ro
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
+      - TOKENIZERS_PARALLELISM=false
+      - OMP_NUM_THREADS=1
+      - MKL_NUM_THREADS=1
+    working_dir: /workspace
+    # Override default command for interactive use
+    command: ["python", "-m", "code_quality_agent", "chat", "."]
+    stdin_open: true
+    tty: true
+    # Memory limits
+    mem_limit: 2g
+    memswap_limit: 2g
+    # Restart policy
+    restart: unless-stopped
+
+  # Alternative service for analysis mode
+  code-quality-analyzer:
+    build: .
+    container_name: code-quality-analyzer
+    volumes:
+      - ./:/workspace:ro
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
+      - TOKENIZERS_PARALLELISM=false
+      - OMP_NUM_THREADS=1
+      - MKL_NUM_THREADS=1
+    working_dir: /workspace
+    command: ["python", "-m", "code_quality_agent", "analyze", "."]
+    # Memory limits
+    mem_limit: 1g
+    memswap_limit: 1g
+    restart: "no"

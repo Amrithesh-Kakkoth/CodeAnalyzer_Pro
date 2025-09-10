@@ -1,0 +1,430 @@
+# =============================================================================
+# CODE QUALITY INTELLIGENCE AGENT - .gitignore
+# =============================================================================
+
+# Python
+# =============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django/Flask/Web frameworks
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+instance/
+.webassets-cache
+
+# Scrapy
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+/site
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+pdm.lock
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+*.sage.py
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# Type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Cython
+cython_debug/
+
+# Development Tools & IDEs
+# =============================================================================
+# PyCharm
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Operating System Files
+# =============================================================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.lnk
+
+# Linux
+*~
+
+# Project Specific - Code Quality Agent
+# =============================================================================
+# Data directories and vector databases
+data/
+vector_db*/
+*.db
+*.sqlite
+*.sqlite3
+chroma.sqlite3
+*.bin
+
+# Environment and configuration files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+.env.development
+.env.test
+secrets.json
+config.json
+api_keys.txt
+credentials.json
+
+# Logs and temporary files
+*.log
+logs/
+log/
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Analysis results and reports
+analysis_results/
+reports/
+output/
+results/
+quality_reports/
+
+# Visualizations and charts
+visualizations/
+charts/
+plots/
+graphs/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.pdf
+*.eps
+
+# Test files and demos
+test_*.py
+*_test.py
+tests/
+test/
+demo_*.py
+demo_*.md
+demo_*.txt
+example_*.py
+sample_*.py
+
+# Documentation builds
+docs/build/
+docs/_build/
+site/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# GitHub analysis temporary directories
+github_analysis_*/
+temp_github_*/
+cloned_repos/
+downloaded_repos/
+
+# AI/ML Model Cache and Data
+# =============================================================================
+# General cache
+.cache/
+model_cache/
+cache/
+
+# LangChain
+.langchain/
+
+# HuggingFace
+.cache/huggingface/
+transformers_cache/
+huggingface_hub/
+
+# Sentence transformers
+.cache/sentence_transformers/
+sentence_transformers_cache/
+
+# OpenAI
+.openai/
+
+# Groq
+.groq/
+
+# Other ML frameworks
+.torch/
+.tensorflow/
+.keras/
+
+# Node.js (for any JS/TS tools)
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Docker
+# =============================================================================
+.dockerignore
+docker-compose.override.yml
+
+# Security and Sensitive Data
+# =============================================================================
+# API keys and tokens
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+
+# Database credentials
+database.yml
+db_config.json
+
+# SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# Performance and Monitoring
+# =============================================================================
+# Profiling data
+*.prof
+*.profile
+*.cprof
+
+# Memory dumps
+*.dmp
+*.hprof
+
+# Performance logs
+perf_*.log
+benchmark_*.log
+
+# Code Quality Tools
+# =============================================================================
+# SonarQube
+.sonar/
+.sonarqube/
+
+# CodeClimate
+.codeclimate.yml
+
+# ESLint
+.eslintcache
+
+# Prettier
+.prettierignore
+
+# Black
+.black
+
+# isort
+.isort.cfg
+
+# Flake8
+.flake8
+
+# Pylint
+.pylintrc
+
+# Bandit
+.bandit
+
+# Safety
+.safety
+
+# License and Legal
+# =============================================================================
+LICENSE.txt
+LICENSE.md
+COPYING
+COPYING.txt
+
+# Archive files
+# =============================================================================
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.rar
+*.7z
+
+# Large files (over 100MB)
+*.large
+*.huge
+
+# Project specific patterns
+# =============================================================================
+# Generated code
+generated/
+auto_generated/
+
+# Build artifacts
+build/
+dist/
+*.whl
+*.tar.gz
+
+# Deployment files
+deploy/
+deployment/
+*.deploy
+
+# Local development
+local/
+dev/
+development/
+
+# Production
+prod/
+production/
+
+# Staging
+staging/
+stage/
+
