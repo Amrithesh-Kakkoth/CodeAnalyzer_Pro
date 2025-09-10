@@ -156,11 +156,6 @@ DEFAULT_SEVERITY_THRESHOLD=medium
 VECTOR_DB_PATH=./data/vector_db
 EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 
-# Web Deployment
-WEB_HOST=localhost
-WEB_PORT=8000
-```
-
 ## 🏗️ Architecture
 
 ### Core Components
@@ -168,7 +163,6 @@ WEB_PORT=8000
 - **`qa_agent.py`**: AI-powered Q&A system
 - **`rag_system.py`**: Retrieval-Augmented Generation
 - **`github_analyzer.py`**: GitHub repository integration
-- **`web_app.py`**: FastAPI web interface
 - **`cli.py`**: Command-line interface
 
 ### AI Integration
@@ -297,7 +291,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Groq**: For providing free LLM access
 - **LangChain**: For AI framework capabilities
 - **ChromaDB**: For vector storage
-- **FastAPI**: For web framework
 - **Rich**: For beautiful CLI output
 
 ## 📞 Support
