@@ -15,35 +15,59 @@ An AI-powered code analysis tool that provides comprehensive code quality insigh
 
 ## 🚀 Quick Start
 
-### Docker (Recommended)
+### Quick Setup & Run
+
+#### Option 1: Docker Compose (Easiest!)
 ```bash
-# Build and run with Docker
-docker build -t code-quality-agent .
-docker run --rm -it --memory=1g --memory-swap=1g \
-  -v ${PWD}:/workspace:ro \
-  -v ${PWD}/.env:/app/.env:ro \
-  code-quality-agent \
+# One command to run everything
+docker-compose up code-quality-agent
+```
+
+#### Option 2: Simple Docker Run
+```bash
+# Run with pre-built image
+docker run --rm -it atlan-code-quality-agent-light \
   python -m code_quality_agent chat https://github.com/username/repo
 ```
 
-### Local Installation
+#### Option 3: Local Installation
 1. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Configure API key**:
-   - Get a free API key from [Groq Console](https://console.groq.com/)
-   - Create `.env` file:
-     ```env
-     GROQ_API_KEY=your_groq_api_key_here
-     OPENAI_API_KEY=your_openai_key_here
-     ```
+2. **Configure API key** (or use setup script):
+   ```bash
+   python setup.py  # Interactive setup
+   ```
 
 3. **Start interactive chat**:
    ```bash
    python -m code_quality_agent chat https://github.com/username/repo
    ```
+
+## ⚙️ Setup
+
+### Quick Configuration
+```bash
+# Interactive setup script (recommended)
+python setup.py
+```
+
+The setup script will:
+- 🤖 Ask for LLM provider (Groq/OpenAI)
+- 🔑 Request API keys
+- 🧠 Let you choose models
+- ⚙️ Configure analysis settings
+- 💾 Create `.env` file automatically
+
+### Manual Configuration
+Create `.env` file manually:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+OPENAI_API_KEY=your_openai_key_here
+LLM_PROVIDER=groq
+```
 
 ## 📖 Usage
 
@@ -204,23 +228,28 @@ WEB_PORT=8000
 - **Multi-platform**: Works on Windows, macOS, and Linux
 
 ### Docker Commands
+
+#### Simple Usage (Recommended)
+```bash
+# Use Docker Compose (easiest)
+docker-compose up code-quality-agent
+
+# Or simple Docker run
+docker run --rm -it atlan-code-quality-agent-light \
+  python -m code_quality_agent chat https://github.com/username/repo
+```
+
+#### Advanced Usage (if needed)
 ```bash
 # Build the image
 docker build -t code-quality-agent .
 
-# Run interactive chat
+# Run with custom settings
 docker run --rm -it --memory=1g --memory-swap=1g \
   -v ${PWD}:/workspace:ro \
   -v ${PWD}/.env:/app/.env:ro \
   code-quality-agent \
   python -m code_quality_agent chat https://github.com/username/repo
-
-# Run analysis only
-docker run --rm --memory=1g --memory-swap=1g \
-  -v ${PWD}:/workspace:ro \
-  -v ${PWD}/.env:/app/.env:ro \
-  code-quality-agent \
-  python -m code_quality_agent analyze https://github.com/username/repo
 ```
 
 ## 🔍 RAG System
