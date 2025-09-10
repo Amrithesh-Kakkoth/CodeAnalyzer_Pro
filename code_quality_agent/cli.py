@@ -139,46 +139,10 @@ def chat(path, model, enhanced):
             console.print("[red]Error: OpenAI API key not found. Please set OPENAI_API_KEY environment variable.[/red]")
             raise click.Abort()
         
-        # Display header
-        console.print(Panel.fit(
-            f"[bold blue]Code Quality Intelligence Agent - Q&A Mode[/bold blue]\n"
-            f"Repository: [green]{path}[/green]\n"
-            f"Model: [yellow]{config.ai.groq_model_name if config.ai.llm_provider == 'groq' else config.ai.openai_model_name}[/yellow]\n\n"
-            f"Type your questions about the codebase. Type 'quit' to exit.",
-            title="Interactive Q&A"
-        ))
-        
-        try:
-            # Initialize Q&A agent
-            qa_agent = CodeQAAgent(path)
-            
-            # Start interactive session
-            while True:
-                try:
-                    question = click.prompt("\n[bold cyan]Your question[/bold cyan]", type=str)
-                    
-                    if question.lower() in ['quit', 'exit', 'q']:
-                        console.print("[yellow]Goodbye![/yellow]")
-                        break
-                    
-                    if not question.strip():
-                        continue
-                    
-                    # Get answer from AI agent
-                    with console.status("[bold green]Thinking..."):
-                        answer = qa_agent.ask_question(question)
-                    
-                    console.print(f"\n[bold green]Answer:[/bold green]\n{answer}")
-                    
-                except KeyboardInterrupt:
-                    console.print("\n[yellow]Goodbye![/yellow]")
-                    break
-                except Exception as e:
-                    console.print(f"[red]Error: {e}[/red]")
-                    
-        except Exception as e:
-            console.print(f"[red]Error initializing Q&A agent: {e}[/red]")
-            raise click.Abort()
+        # Use the enhanced interactive CLI instead of basic chat
+        from .interactive_cli import run_interactive_cli
+        run_interactive_cli(path)
+        return
 
 
 @cli.command()
