@@ -4,7 +4,7 @@ Interactive Q&A agent for code analysis using LangChain.
 
 import warnings
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 from langchain_community.llms import OpenAI
 from groq import Groq
 from langchain.memory import ConversationBufferMemory
@@ -300,19 +300,78 @@ Issues by Severity: {self.github_data.get('issues_by_severity', {})}
         """Ask question using Groq API with enhanced context."""
         try:
             # Get enhanced context from vector store
-            if hasattr(self, 'vectorstore') and self.vectorstore:
-                docs = self.vectorstore.similarity_search(question, k=5)
-                context = "\n".join([doc.page_content for doc in docs])
-            else:
-                context = "No context available."
+            context = "No context available."
+            sources = []
             
-            # Get codebase summary for additional context
+            if hasattr(self, 'vectorstore') and self.vectorstore:
+                # Use enhanced RAG system if available
+                if hasattr(self, 'enhanced_rag') and self.enhanced_rag:
+                    docs = self.enhanced_rag.search_similar(question, k=3)  # Reduced from 5 to 3
+                    print(f"🔍 Enhanced RAG found {len(docs)} documents")
+                else:
+                    docs = self.vectorstore.similarity_search(question, k=3)  # Reduced from 5 to 3
+                    print(f"🔍 Basic RAG found {len(docs)} documents")
+                
+                if docs:
+                    # Truncate context to avoid token limits
+                    context_parts = []
+                    total_length = 0
+                    max_context_length = 2000  # Reduced from 3000 to 2000 characters
+                    
+                    # Sort docs by relevance (entities first, then by length)
+                    sorted_docs = sorted(docs, key=lambda d: (
+                        0 if d.metadata.get('type') == 'entity' else 1,
+                        len(d.page_content)
+                    ))
+                    
+                    for doc in sorted_docs:
+                        doc_content = doc.page_content
+                        if total_length + len(doc_content) > max_context_length:
+                            # Truncate the last document
+                            remaining_space = max_context_length - total_length
+                            if remaining_space > 100:  # Only add if there's meaningful space
+                                doc_content = doc_content[:remaining_space] + "..."
+                                context_parts.append(doc_content)
+                            break
+                        
+                        context_parts.append(doc_content)
+                        total_length += len(doc_content)
+                    
+                    context = "\n\n".join(context_parts)
+                    
+                    # Extract sources with better formatting
+                    for doc in docs:
+                        source_file = doc.metadata.get("source", "Unknown")
+                        filename = doc.metadata.get("filename", Path(source_file).name)
+                        entity_type = doc.metadata.get("type", "code")
+                        entity_name = doc.metadata.get("entity_name", "")
+                        line_number = doc.metadata.get("line_number", "")
+                        
+                        if entity_type == "entity" and entity_name:
+                            if line_number:
+                                sources.append(f"- {filename}:{line_number} ({entity_name})")
+                            else:
+                                sources.append(f"- {filename} ({entity_name})")
+            else:
+                            sources.append(f"- {filename}")
+            
+            # Get codebase summary for additional context (truncated)
             codebase_summary = ""
             if hasattr(self, 'enhanced_rag'):
-                codebase_summary = self.enhanced_rag.get_codebase_summary()
+                summary = self.enhanced_rag.get_codebase_summary()
+                codebase_summary = summary[:1000] + "..." if len(summary) > 1000 else summary
             
-            # Prepare enhanced prompt
-            prompt = f"""You are an expert code analysis assistant with deep understanding of code structure and relationships. Answer the following question about the codebase:
+            # Check if question is about a specific file
+            filename_match = self._extract_filename_from_question(question)
+            if filename_match and hasattr(self, 'enhanced_rag'):
+                file_content = self.enhanced_rag.get_file_content(filename_match)
+                if "not found" not in file_content.lower():
+                    # Truncate file content to avoid token limits
+                    truncated_content = file_content[:1500] + "..." if len(file_content) > 1500 else file_content
+                    context = f"Specific file content for {filename_match}:\n\n{truncated_content}\n\n" + context
+            
+            # Prepare enhanced prompt with token limit awareness
+            prompt = f"""You are an expert code analysis assistant. Answer the following question about the codebase:
 
 Question: {question}
 
@@ -323,14 +382,12 @@ Relevant Code Context:
 {context}
 
 Instructions:
-1. Analyze the code structure and relationships
-2. Provide specific examples from the code
-3. Explain how different parts of the code interact
-4. Identify patterns, dependencies, and architectural decisions
-5. If asked about specific functions/classes, explain their purpose, parameters, and usage
-6. If asked about relationships, trace dependencies and call chains
+1. Provide specific examples from the code with line numbers when available
+2. Explain how different parts of the code interact
+3. If asked about specific functions/classes, explain their purpose and usage
+4. Keep your response concise and focused
 
-IMPORTANT: Only answer based on the provided context. If the context doesn't contain the information needed to answer the question, say "I don't have enough information in the provided context to answer this question." Do not make up or hallucinate information."""
+IMPORTANT: Only answer based on the provided context. If the context doesn't contain enough information, say "I need more specific information about this topic." Do not make up information."""
             
             # Use LangChain LLM
             response = self.llm.invoke(prompt)
@@ -338,27 +395,41 @@ IMPORTANT: Only answer based on the provided context. If the context doesn't con
             # Extract content from LangChain response
             answer = response.content if hasattr(response, 'content') else str(response)
             
-            # Add enhanced source information
-            if hasattr(self, 'vectorstore') and self.vectorstore:
-                docs = self.vectorstore.similarity_search(question, k=3)
-                if docs:
-                    sources = []
-                    for doc in docs:
-                        source_file = doc.metadata.get("source", "Unknown")
-                        entity_type = doc.metadata.get("type", "code")
-                        if entity_type == "entity":
-                            entity_name = doc.metadata.get("entity_name", "")
-                            sources.append(f"- {Path(source_file).name} ({entity_name})")
-                        else:
-                            sources.append(f"- {Path(source_file).name}")
-                    
-                    if sources:
-                        answer += f"\n\n**Sources:**\n" + "\n".join(sources)
+            # Add enhanced source information (truncated)
+            if sources:
+                sources_text = "\n".join(sources[:5])  # Limit to 5 sources
+                answer += f"\n\n**Sources:**\n{sources_text}"
             
             return answer
             
         except Exception as e:
-            return f"Error with Groq API: {str(e)}"
+            error_msg = str(e)
+            if "413" in error_msg or "token" in error_msg.lower():
+                return f"Error: The response is too large for the current API limits. Please ask a more specific question or break your query into smaller parts. Original error: {error_msg}"
+            return f"Error with Groq API: {error_msg}"
+    
+    def _extract_filename_from_question(self, question: str) -> Optional[str]:
+        """Extract filename from question if mentioned."""
+        import re
+        
+        # Look for common file patterns
+        patterns = [
+            r'(\w+\.py)',      # test.py
+            r'(\w+\.js)',      # test.js
+            r'(\w+\.ts)',      # test.ts
+            r'(\w+\.jsx)',     # test.jsx
+            r'(\w+\.tsx)',     # test.tsx
+            r'file\s+(\w+\.\w+)',  # file test.py
+            r'in\s+(\w+\.\w+)',    # in test.py
+            r'from\s+(\w+\.\w+)',  # from test.py
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, question, re.IGNORECASE)
+            if match:
+                return match.group(1)
+        
+        return None
     
     def _ask_openai(self, question: str) -> str:
         """Ask question using OpenAI API."""
