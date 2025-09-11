@@ -303,6 +303,9 @@ class EnhancedCodeRAGSystem:
                         self.embeddings = None
                 except Exception:
                     self.embeddings = None
+        except Exception as e:
+            print(f"Warning: Failed to initialize embeddings: {e}")
+            self.embeddings = None
     
     def _initialize_text_splitter(self):
         """Initialize text splitter for code."""
@@ -350,21 +353,24 @@ class EnhancedCodeRAGSystem:
             
             # Create vector store
             if self.embeddings:
-                self.vectorstore = Chroma.from_documents(
-                    texts,
-                    self.embeddings,
-                    persist_directory=f"{config.rag.vector_db_path}_enhanced"
-                )
-                
-                return {
-                    "success": True,
-                    "documents_indexed": len(documents),
-                    "chunks_created": len(texts),
-                    "entities_found": sum(len(entities) for entities in self.code_entities.values()),
-                    "relationships_found": len(self.code_relationships)
-                }
+                try:
+                    self.vectorstore = Chroma.from_documents(
+                        texts,
+                        self.embeddings,
+                        persist_directory=f"{config.rag.vector_db_path}_enhanced"
+                    )
+                    
+                    return {
+                        "success": True,
+                        "documents_indexed": len(documents),
+                        "chunks_created": len(texts),
+                        "entities_found": sum(len(entities) for entities in self.code_entities.values()),
+                        "relationships_found": len(self.code_relationships)
+                    }
+                except Exception as e:
+                    return {"error": f"Failed to create vector store: {str(e)}"}
             else:
-                return {"error": "No embedding model available"}
+                return {"error": "No embedding model available - enhanced mode requires API keys"}
                 
         except Exception as e:
             return {"error": f"Error indexing codebase: {str(e)}"}

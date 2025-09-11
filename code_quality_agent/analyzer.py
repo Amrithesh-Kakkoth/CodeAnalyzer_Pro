@@ -319,13 +319,31 @@ class CodeAnalyzer:
         self.python_analyzer = PythonAnalyzer()
         self.javascript_analyzer = JavaScriptAnalyzer()
         self.duplication_detector = DuplicationDetector()
-        self.enhanced_mode = enhanced_mode
         
-        if enhanced_mode:
-            from .enhanced_analyzer import EnhancedCodeAnalyzer
-            from .severity_scorer import SeverityScorer
-            self.enhanced_analyzer = EnhancedCodeAnalyzer()
-            self.severity_scorer = SeverityScorer()
+        # Check if we have API keys before enabling enhanced mode
+        self.enhanced_mode = enhanced_mode and self._has_api_keys()
+        
+        if self.enhanced_mode:
+            try:
+                from .enhanced_analyzer import EnhancedCodeAnalyzer
+                from .severity_scorer import SeverityScorer
+                self.enhanced_analyzer = EnhancedCodeAnalyzer()
+                self.severity_scorer = SeverityScorer()
+            except Exception as e:
+                print(f"Warning: Enhanced mode failed to initialize: {e}")
+                print("Falling back to basic analysis mode.")
+                self.enhanced_mode = False
+    
+    def _has_api_keys(self) -> bool:
+        """Check if we have valid API keys for enhanced mode."""
+        try:
+            if config.ai.llm_provider == "groq":
+                return bool(config.ai.groq_api_key and config.ai.groq_api_key.strip())
+            elif config.ai.llm_provider == "openai":
+                return bool(config.ai.openai_api_key and config.ai.openai_api_key.strip())
+            return False
+        except Exception:
+            return False
     
     def analyze_path(self, path: str) -> Dict[str, Any]:
         """Analyze a file or directory for quality issues."""

@@ -45,6 +45,8 @@ docker run --rm -it code-analyzer-pro \
    ```bash
    python -m code_quality_agent chat https://github.com/username/repo
    ```
+   
+   **Quick Run**: `python -m code_quality_agent chat <your repo name>`
 
 ## ⚙️ Setup
 
@@ -155,11 +157,6 @@ DEFAULT_SEVERITY_THRESHOLD=medium
 # RAG Configuration
 VECTOR_DB_PATH=./data/vector_db
 EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
-
-# Web Deployment
-WEB_HOST=localhost
-WEB_PORT=8000
-```
 
 ## 🏗️ Architecture
 

@@ -1,0 +1,612 @@
+{
+  "summary": {
+    "files_analyzed": 14,
+    "lines_of_code": 4987,
+    "total_issues": 65
+  },
+  "categories": {
+    "security": {
+      "name": "Security",
+      "description": "Security related issues",
+      "issues": [
+        {
+          "message": "Use of eval() detected",
+          "severity": "critical",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 117,
+          "column": null,
+          "category": "security",
+          "suggestion": "Avoid eval() as it can execute arbitrary code"
+        },
+        {
+          "message": "Use of eval() detected",
+          "severity": "critical",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 119,
+          "column": null,
+          "category": "security",
+          "suggestion": "Avoid eval() as it can execute arbitrary code"
+        },
+        {
+          "message": "Use of eval() detected",
+          "severity": "critical",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 124,
+          "column": null,
+          "category": "security",
+          "suggestion": "Avoid eval() as it can execute arbitrary code"
+        },
+        {
+          "message": "Use of eval() detected",
+          "severity": "critical",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 227,
+          "column": null,
+          "category": "security",
+          "suggestion": "Avoid eval() as it can execute arbitrary code"
+        },
+        {
+          "message": "Use of eval() detected",
+          "severity": "critical",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 229,
+          "column": null,
+          "category": "security",
+          "suggestion": "Avoid eval() as it can execute arbitrary code"
+        },
+        {
+          "message": "Use of eval() detected",
+          "severity": "critical",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 234,
+          "column": null,
+          "category": "security",
+          "suggestion": "Avoid eval() as it can execute arbitrary code"
+        }
+      ]
+    },
+    "style": {
+      "name": "Style",
+      "description": "Style related issues",
+      "issues": [
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 144,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Line too long (139 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\cli.py",
+          "line": 179,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (170 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\github_analyzer.py",
+          "line": 216,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (133 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\github_analyzer.py",
+          "line": 281,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (125 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\github_analyzer.py",
+          "line": 328,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (262 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\interactive_cli.py",
+          "line": 125,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (160 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\interactive_cli.py",
+          "line": 392,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (205 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\interactive_cli.py",
+          "line": 533,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (171 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\qa_agent.py",
+          "line": 108,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (158 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\qa_agent.py",
+          "line": 187,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (177 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\qa_agent.py",
+          "line": 315,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (264 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\qa_agent.py",
+          "line": 333,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (161 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\qa_agent.py",
+          "line": 396,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\severity_scorer.py",
+          "line": 79,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 500,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 501,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 502,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 503,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 506,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 507,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 508,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 509,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 510,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 511,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 514,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 515,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 516,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 519,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 520,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 521,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 522,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 525,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 526,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 527,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 528,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 531,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 532,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 533,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 536,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 537,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 538,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Multiple statements on one line",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 539,
+          "column": null,
+          "category": "style",
+          "suggestion": "Use separate lines for each statement"
+        },
+        {
+          "message": "Line too long (122 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 549,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (122 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 550,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        },
+        {
+          "message": "Line too long (130 characters)",
+          "severity": "low",
+          "file": "code_quality_agent\\visualizer.py",
+          "line": 588,
+          "column": null,
+          "category": "style",
+          "suggestion": "Break long lines for better readability"
+        }
+      ]
+    },
+    "documentation": {
+      "name": "Documentation",
+      "description": "Documentation related issues",
+      "issues": [
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 20,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 208,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 318,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\analyzer.py",
+          "line": 476,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\enhanced_analyzer.py",
+          "line": 21,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\enhanced_analyzer.py",
+          "line": 139,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\enhanced_analyzer.py",
+          "line": 283,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\enhanced_analyzer.py",
+          "line": 391,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\enhanced_analyzer.py",
+          "line": 512,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\enhanced_rag_system.py",
+          "line": 50,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\github_analyzer.py",
+          "line": 23,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function 'process_contents' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\github_analyzer.py",
+          "line": 264,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\interactive_cli.py",
+          "line": 32,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        },
+        {
+          "message": "Function '__init__' missing docstring",
+          "severity": "low",
+          "file": "code_quality_agent\\severity_scorer.py",
+          "line": 40,
+          "column": null,
+          "category": "documentation",
+          "suggestion": "Add a docstring describing the function's purpose"
+        }
+      ]
+    }
+  }
+}

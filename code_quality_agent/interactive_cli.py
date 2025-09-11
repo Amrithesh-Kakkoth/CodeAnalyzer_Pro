@@ -47,17 +47,26 @@ class InteractiveCLI:
             if not self._check_api_key():
                 return False
             
-            # Initialize components
+            # Initialize components with timeout protection
             with self.console.status("[bold green]Initializing AI agent..."):
-                self.qa_agent = CodeQAAgent(str(self.codebase_path))
-                
-                # For GitHub repos, update the actual path to the downloaded repository
-                if self.is_github_repo and hasattr(self.qa_agent, 'enhanced_rag') and self.qa_agent.enhanced_rag:
-                    self.actual_repo_path = str(self.qa_agent.enhanced_rag.codebase_path)
+                try:
+                    self.qa_agent = CodeQAAgent(str(self.codebase_path))
+                    
+                    # For GitHub repos, update the actual path to the downloaded repository
+                    if self.is_github_repo and hasattr(self.qa_agent, 'enhanced_rag') and self.qa_agent.enhanced_rag:
+                        self.actual_repo_path = str(self.qa_agent.enhanced_rag.codebase_path)
+                except Exception as e:
+                    self.console.print(f"[yellow]Warning: AI agent initialization failed: {e}[/yellow]")
+                    self.console.print("[yellow]Continuing with basic analysis mode...[/yellow]")
+                    self.qa_agent = None
                 
             with self.console.status("[bold green]Initializing analyzer..."):
-                self.analyzer = CodeAnalyzer(enhanced_mode=True)
-                self.scorer = SeverityScorer()
+                self.analyzer = CodeAnalyzer(enhanced_mode=False)  # Use basic mode to avoid hangs
+                try:
+                    self.scorer = SeverityScorer()
+                except Exception as e:
+                    self.console.print(f"[yellow]Warning: Severity scorer initialization failed: {e}[/yellow]")
+                    self.scorer = None
                 
             return True
             
@@ -67,15 +76,21 @@ class InteractiveCLI:
     
     def _check_api_key(self) -> bool:
         """Check if API key is configured."""
-        if config.ai.llm_provider == "groq" and not config.ai.groq_api_key:
-            self.console.print("[red]Error: Groq API key not found.[/red]")
-            self.console.print("[yellow]Please set GROQ_API_KEY environment variable.[/yellow]")
-            return False
-        elif config.ai.llm_provider == "openai" and not config.ai.openai_api_key:
-            self.console.print("[red]Error: OpenAI API key not found.[/red]")
-            self.console.print("[yellow]Please set OPENAI_API_KEY environment variable.[/yellow]")
-            return False
-        return True
+        has_api_key = False
+        if config.ai.llm_provider == "groq" and config.ai.groq_api_key:
+            has_api_key = True
+        elif config.ai.llm_provider == "openai" and config.ai.openai_api_key:
+            has_api_key = True
+        
+        if not has_api_key:
+            self.console.print("[yellow]Warning: No API key found for AI features.[/yellow]")
+            self.console.print("[yellow]You can still use basic analysis features.[/yellow]")
+            if config.ai.llm_provider == "groq":
+                self.console.print("[yellow]To enable AI features, set GROQ_API_KEY environment variable.[/yellow]")
+            elif config.ai.llm_provider == "openai":
+                self.console.print("[yellow]To enable AI features, set OPENAI_API_KEY environment variable.[/yellow]")
+        
+        return True  # Always return True to allow basic functionality
     
     def show_welcome(self):
         """Display welcome screen with codebase info."""

@@ -41,18 +41,24 @@ class CodeQAAgent:
         import uuid
         self.vectorstore_path = f"{config.rag.vector_db_path}_{uuid.uuid4().hex[:8]}"
         
-        # Initialize enhanced RAG system
-        if self.is_github_repo:
-            # For GitHub repos, we'll download and analyze
-            self._setup_github_rag()
-        else:
-            self.enhanced_rag = EnhancedCodeRAGSystem(str(self.codebase_path))
-        
-        # Initialize if API key is available
+        # Initialize enhanced RAG system only if API key is available
         if self._has_api_key():
+            if self.is_github_repo:
+                # For GitHub repos, we'll download and analyze
+                self._setup_github_rag()
+            else:
+                try:
+                    self.enhanced_rag = EnhancedCodeRAGSystem(str(self.codebase_path))
+                except Exception as e:
+                    print(f"Warning: Failed to initialize enhanced RAG system: {e}")
+                    self.enhanced_rag = None
+            
             self._initialize_llm()
-            if not self.is_github_repo:
+            if not self.is_github_repo and self.enhanced_rag:
                 self._setup_enhanced_retrieval_chain()
+        else:
+            # No API key available, skip enhanced features
+            self.enhanced_rag = None
     
     def _has_api_key(self):
         """Check if we have a valid API key for the selected provider."""

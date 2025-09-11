@@ -125,24 +125,26 @@ def chat(path, model, enhanced):
         console.print(f"[red]Error: Path '{path}' does not exist.[/red]")
         raise click.Abort()
     
-    if enhanced:
-        # Use enhanced interactive CLI
-        from .interactive_cli import run_interactive_cli
-        run_interactive_cli(path)
-    else:
-        # Original simple chat
-        # Check for API key based on provider
-        if config.ai.llm_provider == "groq" and not config.ai.groq_api_key:
-            console.print("[red]Error: Groq API key not found. Please set GROQ_API_KEY environment variable.[/red]")
-            raise click.Abort()
-        elif config.ai.llm_provider == "openai" and not config.ai.openai_api_key:
-            console.print("[red]Error: OpenAI API key not found. Please set OPENAI_API_KEY environment variable.[/red]")
-            raise click.Abort()
-        
-        # Use the enhanced interactive CLI instead of basic chat
-        from .interactive_cli import run_interactive_cli
-        run_interactive_cli(path)
-        return
+    # Check for API key first
+    has_api_key = False
+    if config.ai.llm_provider == "groq" and config.ai.groq_api_key:
+        has_api_key = True
+    elif config.ai.llm_provider == "openai" and config.ai.openai_api_key:
+        has_api_key = True
+    
+    if not has_api_key:
+        console.print("[yellow]⚠️  No API key found for AI features[/yellow]")
+        console.print("[yellow]The chat command requires an API key to work.[/yellow]")
+        console.print("[yellow]Please set one of the following environment variables:[/yellow]")
+        console.print("[cyan]  GROQ_API_KEY=your_groq_api_key_here[/cyan]")
+        console.print("[cyan]  OPENAI_API_KEY=your_openai_key_here[/cyan]")
+        console.print("\n[yellow]You can still use the analyze command for basic code analysis:[/yellow]")
+        console.print("[cyan]  python -m code_quality_agent analyze .[/cyan]")
+        raise click.Abort()
+    
+    # Use enhanced interactive CLI
+    from .interactive_cli import run_interactive_cli
+    run_interactive_cli(path)
 
 
 @cli.command()
