@@ -1,37 +1,62 @@
+# CodeAnalyzer Pro - Enhanced Code-Aware RAG System
+# Docker Compose configuration for multi-service deployment
+version: '3.8'
+
 services:
-  code-analyzer-pro:
-    build: .
-    container_name: code-analyzer-pro
+  # Enhanced RAG Chat Service - Interactive Q&A with code understanding
+  enhanced-rag-chat:
+    build: 
+      context: .
+      target: production
+    container_name: code-analyzer-pro-chat
     volumes:
-      # Mount your code directory for analysis
+      # Mount your code directory for Enhanced RAG analysis
       - ./:/workspace:ro
-      # Persist vector databases
+      # Persist Enhanced RAG vector databases and cache
       - ./data:/app/data
-      # Mount environment file
+      # Mount environment file with API keys
       - ./.env:/app/.env:ro
+      # Optional: Mount custom config
+      - ./config:/app/config:ro
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
+      # Enhanced RAG memory optimization
       - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
       - TOKENIZERS_PARALLELISM=false
       - OMP_NUM_THREADS=1
       - MKL_NUM_THREADS=1
+      # Enhanced RAG specific settings
+      - CHROMA_DB_PATH=/app/data/vector_db
+      - SENTENCE_TRANSFORMERS_CACHE=/app/data/cache
+      - TRANSFORMERS_CACHE=/app/data/cache
+      - HF_HOME=/app/data/cache
     working_dir: /workspace
-    # Override default command for interactive use
+    # Enhanced Code-Aware RAG interactive chat
     command: ["python", "-m", "code_quality_agent", "chat", "."]
     stdin_open: true
     tty: true
-    # Memory limits
+    # Memory limits optimized for Enhanced RAG
     mem_limit: 2g
     memswap_limit: 2g
-    # Restart policy
+    # Health check for Enhanced RAG system
+    healthcheck:
+      test: ["CMD", "python", "-c", "import code_quality_agent; print('Enhanced RAG ready')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     restart: unless-stopped
+    labels:
+      - "service=enhanced-rag-chat"
+      - "description=Enhanced Code-Aware RAG Interactive Q&A"
 
-  # Alternative service for analysis mode
-  code-analyzer-pro-analyzer:
-    build: .
-    container_name: code-analyzer-pro-analyzer
+  # Code Analysis Service - AST parsing and quality assessment
+  code-analyzer:
+    build: 
+      context: .
+      target: production
+    container_name: code-analyzer-pro-analysis
     volumes:
       - ./:/workspace:ro
       - ./data:/app/data
@@ -45,8 +70,44 @@ services:
       - OMP_NUM_THREADS=1
       - MKL_NUM_THREADS=1
     working_dir: /workspace
-    command: ["python", "-m", "code_quality_agent", "analyze", "."]
-    # Memory limits
+    # AST-based code analysis with Enhanced RAG insights
+    command: ["python", "-m", "code_quality_agent", "analyze", ".", "--enhanced"]
+    # Memory limits for analysis operations
     mem_limit: 1g
     memswap_limit: 1g
     restart: "no"
+    labels:
+      - "service=code-analyzer"
+      - "description=Enhanced Code Analysis with AST Parsing"
+
+  # GitHub Repository Analysis Service
+  github-analyzer:
+    build: 
+      context: .
+      target: production
+    container_name: code-analyzer-pro-github
+    volumes:
+      - ./data:/app/data
+      - ./.env:/app/.env:ro
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128
+      - TOKENIZERS_PARALLELISM=false
+      - OMP_NUM_THREADS=1
+      - MKL_NUM_THREADS=1
+    # GitHub repository analysis with Enhanced RAG
+    command: ["python", "-m", "code_quality_agent", "search", "python"]
+    mem_limit: 1g
+    memswap_limit: 1g
+    restart: "no"
+    labels:
+      - "service=github-analyzer"
+      - "description=GitHub Repository Analysis with Enhanced RAG"
+
+# Network configuration for Enhanced RAG system
+networks:
+  default:
+    name: code-analyzer-pro-network
+    driver: bridge
