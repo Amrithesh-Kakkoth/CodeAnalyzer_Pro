@@ -3,22 +3,23 @@
 ## 📋 Table of Contents
 1. [Project Overview](#project-overview)
 2. [System Architecture](#system-architecture)
-3. [RAG Architecture](#rag-architecture)
-4. [AST Parsing Architecture](#ast-parsing-architecture)
-5. [Data Pipeline](#data-pipeline)
-6. [Component Details](#component-details)
-7. [Technology Stack](#technology-stack)
+3. [Enhanced Code-Aware RAG Architecture](#enhanced-code-aware-rag-architecture)
+4. [Enhanced RAG vs Vanilla RAG](#enhanced-rag-vs-vanilla-rag)
+5. [AST Parsing Architecture](#ast-parsing-architecture)
+6. [Data Pipeline](#data-pipeline)
+7. [Component Details](#component-details)
+8. [Technology Stack](#technology-stack)
 
 ---
 
 ## 🎯 Project Overview
 
-The **CodeAnalyzer Pro** is an AI-powered system that analyzes code repositories to provide comprehensive quality insights, security assessments, and architectural recommendations. It goes beyond traditional linting by understanding code relationships, dependencies, and providing conversational Q&A capabilities.
+The **CodeAnalyzer Pro** is an AI-powered system that analyzes code repositories to provide comprehensive quality insights, security assessments, and architectural recommendations. It features an **Enhanced Code-Aware RAG System** that goes far beyond traditional linting and vanilla RAG by understanding code structure, relationships, dependencies, and providing intelligent conversational Q&A capabilities.
 
 ### Key Features
 - **Multi-language Support**: Python, JavaScript, TypeScript
 - **AST Parsing**: Deep structural analysis of code
-- **RAG System**: Retrieval-Augmented Generation for context-aware responses
+- **Enhanced Code-Aware RAG System**: Advanced RAG with AST parsing, entity extraction, and relationship mapping
 - **Professional CLI Interface**: Beautiful, interactive command-line experience
 - **Security Analysis**: Vulnerability detection and risk assessment
 - **Performance Analysis**: Bottleneck identification and optimization suggestions
@@ -164,7 +165,7 @@ graph TB
 
 ---
 
-## 🔍 RAG Architecture
+## 🔍 Enhanced Code-Aware RAG Architecture
 
 ```mermaid
 graph TB
@@ -226,27 +227,41 @@ graph TB
     ENHANCED_RESPONSE --> SOURCE_ATTRIBUTION
 ```
 
-### RAG Components
+### Enhanced Code-Aware RAG Components
+
+Unlike vanilla RAG systems that treat code as simple text, our system provides deep code understanding:
+
+#### **Beyond Vanilla RAG**
+- **Code Structure Analysis**: AST parsing understands syntax and semantics
+- **Entity-Aware Processing**: Identifies functions, classes, variables, and their relationships
+- **Dependency Tracking**: Maps how code pieces connect and depend on each other
+- **Contextual Retrieval**: Finds relevant code based on meaning, not just keywords
+
+#### **Advanced RAG Components**
 
 1. **Code Analysis Pipeline**
    - AST parsing for structural understanding
    - Entity extraction (functions, classes, imports)
    - Relationship mapping (dependencies, calls)
+   - Call chain analysis and inheritance tracking
 
-2. **Document Processing**
-   - Enhanced metadata with filename, language, AST info
-   - Code content inclusion
-   - Text chunking for optimal retrieval
+2. **Enhanced Document Processing**
+   - Rich metadata with filename, language, AST info, line numbers
+   - Entity relationship context
+   - Dependency information and caller tracking
+   - Code content with structural annotations
 
-3. **Vector Store**
-   - ChromaDB for similarity search
+3. **Intelligent Vector Store**
+   - ChromaDB for similarity search with code-aware filtering
    - Sentence Transformers for embeddings
-   - Complex metadata filtering
+   - Complex metadata filtering by entity type, relationships
+   - Source attribution with precise file/line references
 
-4. **Retrieval & Generation**
-   - Context-aware query processing
-   - Multi-source retrieval
-   - LLM integration with source attribution
+4. **Context-Aware Retrieval & Generation**
+   - Entity-aware query processing
+   - Multi-source retrieval with relationship context
+   - LLM integration with enhanced source attribution
+   - Dependency-aware response generation
 
 ---
 
@@ -486,6 +501,47 @@ flowchart TD
 
 ---
 
+## 🚀 Enhanced RAG vs Vanilla RAG
+
+### **What Makes Our System Different**
+
+Our Enhanced Code-Aware RAG system fundamentally differs from vanilla RAG approaches:
+
+| **Aspect** | **Vanilla RAG** | **Enhanced Code-Aware RAG** |
+|------------|-----------------|------------------------------|
+| **Code Understanding** | Treats code as plain text | AST parsing for structural understanding |
+| **Entity Recognition** | No concept of code entities | Identifies functions, classes, variables, imports |
+| **Relationship Mapping** | No dependency tracking | Maps calls, dependencies, inheritance |
+| **Context Building** | Simple text chunks | Rich metadata with line numbers, relationships |
+| **Query Processing** | Keyword-based similarity | Semantic understanding with entity context |
+| **Source Attribution** | Basic file references | Precise file/line/function tracking |
+| **Retrieval Quality** | Text similarity only | Code-aware semantic search |
+
+### **Technical Advantages**
+
+1. **Structural Understanding**
+   - AST parsing provides deep code comprehension
+   - Syntax-aware entity extraction
+   - Language-specific parsing for Python, JS, TS
+
+2. **Relationship Intelligence**
+   - Dependency graph construction
+   - Call chain analysis
+   - Inheritance hierarchy mapping
+
+3. **Enhanced Metadata**
+   - Entity type identification (function, class, variable)
+   - Line number precision
+   - Dependency and caller information
+   - Language-specific annotations
+
+4. **Contextual Retrieval**
+   - Entity-aware similarity search
+   - Relationship-based context building
+   - Multi-hop dependency resolution
+
+---
+
 ## 🧩 Component Details
 
 ### Core Components
@@ -495,10 +551,12 @@ flowchart TD
    - Conversation memory
    - Multi-LLM support (OpenAI, Groq)
 
-2. **Enhanced RAG System** (`enhanced_rag_system.py`)
-   - ChromaDB vector store
-   - Sentence Transformers embeddings
-   - Complex metadata handling
+2. **Enhanced Code-Aware RAG System** (`enhanced_rag_system.py`)
+   - ChromaDB vector store with code-aware filtering
+   - Sentence Transformers embeddings with structural context
+   - Complex metadata handling with entity relationships
+   - AST-based code understanding and entity extraction
+   - Dependency tracking and call chain analysis
 
 3. **Code Analyzer** (`analyzer.py`)
    - Multi-language analysis

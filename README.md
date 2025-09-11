@@ -1,6 +1,6 @@
 # CodeAnalyzer Pro
 
-An AI-powered code analysis tool that provides comprehensive code quality insights, automated issue detection, and interactive Q&A capabilities with a professional CLI interface.
+An AI-powered code analysis tool that provides comprehensive code quality insights, automated issue detection, and intelligent Q&A capabilities using an advanced code-aware RAG system with a professional CLI interface.
 
 ## ✨ Features
 
@@ -9,7 +9,7 @@ An AI-powered code analysis tool that provides comprehensive code quality insigh
 - **Professional CLI Interface**: Beautiful, interactive command-line experience
 - **Interactive Q&A**: Chat with AI about your codebase
 - **GitHub Integration**: Analyze remote repositories directly from URLs
-- **Enhanced RAG System**: Intelligent code understanding with entity extraction
+- **Enhanced RAG System**: Advanced code-aware RAG with AST parsing, entity extraction, and relationship mapping
 - **Docker Support**: Containerized deployment with memory optimization
 - **Free LLM Support**: Powered by Groq (free tier) with OpenAI fallback
 
@@ -182,11 +182,13 @@ EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 - **Real-time Feedback**: Live progress indicators and status updates
 - **Color-coded Output**: Professional color scheme for better readability
 
-### Advanced RAG System
-- **Entity Extraction**: AST-based code entity identification
-- **Relationship Mapping**: Code dependency and call chain analysis
-- **Enhanced Metadata**: Comprehensive code context for AI responses
-- **Vector Database**: ChromaDB for efficient similarity search
+### Advanced Code-Aware RAG System
+- **AST-Based Understanding**: Deep code structure analysis beyond simple text processing
+- **Entity Extraction**: Intelligent identification of functions, classes, variables, and imports
+- **Relationship Mapping**: Code dependency tracking, call chains, and inheritance analysis
+- **Enhanced Metadata**: Rich contextual information including line numbers, dependencies, and callers
+- **Semantic Search**: Vector similarity search enhanced with code relationship context
+- **Source Attribution**: Precise file, line, and function-level source tracking
 
 ### Memory Optimization
 - **Docker Memory Limits**: Optimized for 1GB RAM usage
@@ -249,13 +251,22 @@ docker run --rm -it --memory=1g --memory-swap=1g \
   python -m code_quality_agent chat https://github.com/username/repo
 ```
 
-## 🔍 RAG System
+## 🔍 Enhanced Code-Aware RAG System
 
-The Retrieval-Augmented Generation system:
-- **Code Indexing**: Vector embeddings of code
-- **Semantic Search**: Find relevant code sections
-- **Context-Aware Q&A**: AI understands your codebase
-- **Local Processing**: No external API calls for embeddings
+Unlike vanilla RAG systems that treat code as simple text, our system provides deep code understanding:
+
+### **Beyond Vanilla RAG**
+- **Code Structure Analysis**: AST parsing understands syntax and semantics
+- **Entity-Aware Processing**: Identifies functions, classes, variables, and their relationships
+- **Dependency Tracking**: Maps how code pieces connect and depend on each other
+- **Contextual Retrieval**: Finds relevant code based on meaning, not just keywords
+
+### **Key Capabilities**
+- **Code Indexing**: Vector embeddings with rich metadata and structural information
+- **Semantic Search**: Find relevant code sections based on functionality and relationships
+- **Context-Aware Q&A**: AI understands your codebase structure and can explain how components work together
+- **Source Attribution**: Precise tracking of which files, lines, and functions provide information
+- **Local Processing**: No external API calls for embeddings - all processing happens locally
 
 ## 📝 Examples
 
@@ -267,9 +278,16 @@ python -m code_quality_agent analyze ./my-python-project --enhanced
 ### Chat About Your Code
 ```bash
 python -m code_quality_agent chat ./my-project
-# Ask: "What are the main functions in this code?"
-# Ask: "How can I improve the performance?"
-# Ask: "What security issues do you see?"
+
+# Ask sophisticated questions that showcase enhanced RAG:
+# "What are the main functions in this code?"
+# "How does the authentication system work?"
+# "What are the dependencies between modules?"
+# "Show me the call chain for user registration"
+# "What functions depend on the database connection?"
+# "How can I improve the performance of this specific function?"
+# "What security vulnerabilities exist in the auth module?"
+# "Explain the data flow from API request to database storage"
 ```
 
 ### Analyze GitHub Repository
