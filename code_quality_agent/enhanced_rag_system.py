@@ -330,20 +330,25 @@ class EnhancedCodeRAGSystem:
             filtered_documents = []
             for doc in documents:
                 try:
-                    filtered_metadata = filter_complex_metadata(doc.metadata)
+                    # Create safe metadata that preserves important information
+                    filtered_metadata = self._create_safe_metadata(doc.metadata)
                     filtered_doc = Document(
                         page_content=doc.page_content,
                         metadata=filtered_metadata
                     )
                     filtered_documents.append(filtered_doc)
                 except Exception as e:
+                    print(f"Warning: Error filtering metadata for document: {e}")
                     # Fallback: create document with basic metadata
                     filtered_doc = Document(
                         page_content=doc.page_content,
                         metadata={
                             'source': doc.metadata.get('source', 'unknown'),
                             'filename': doc.metadata.get('filename', 'unknown'),
-                            'type': doc.metadata.get('type', 'unknown')
+                            'type': doc.metadata.get('type', 'unknown'),
+                            'entity_name': doc.metadata.get('entity_name', ''),
+                            'line_number': str(doc.metadata.get('line_number', '')),
+                            'language': doc.metadata.get('language', 'unknown')
                         }
                     )
                     filtered_documents.append(filtered_doc)
@@ -392,14 +397,18 @@ class EnhancedCodeRAGSystem:
     def _analyze_file(self, file_path: Path):
         """Analyze a single file."""
         try:
+            print(f"🔍 Analyzing file: {file_path}")
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
             if file_path.suffix == '.py':
                 entities = self.structure_analyzer.analyze_python_file(str(file_path), content)
+                print(f"  📊 Found {len(entities)} Python entities")
             elif file_path.suffix in ['.js', '.ts', '.jsx', '.tsx']:
                 entities = self.structure_analyzer.analyze_javascript_file(str(file_path), content)
+                print(f"  📊 Found {len(entities)} JavaScript/TypeScript entities")
             else:
+                print(f"  ⚠️ Unsupported file type: {file_path.suffix}")
                 return
             
             self.code_entities[str(file_path)] = entities
@@ -407,9 +416,97 @@ class EnhancedCodeRAGSystem:
             # Build relationships for this file
             relationships = self.structure_analyzer.build_relationships(entities)
             self.code_relationships.extend(relationships)
+            print(f"  🔗 Added {len(relationships)} relationships")
             
         except Exception as e:
-            pass  # Skip files that can't be analyzed
+            print(f"  ❌ Error analyzing {file_path}: {e}")
+    
+    def debug_vector_store(self) -> Dict[str, Any]:
+        """Debug information about the vector store."""
+        if not self.vectorstore:
+            return {"error": "No vector store available"}
+        
+        try:
+            all_docs = self.vectorstore.get()
+            debug_info = {
+                "total_documents": len(all_docs.get('documents', [])),
+                "files": {},
+                "entity_types": {},
+                "languages": {}
+            }
+            
+            if 'documents' in all_docs and 'metadatas' in all_docs:
+                for i, metadata in enumerate(all_docs['metadatas']):
+                    filename = metadata.get('filename', 'unknown')
+                    entity_type = metadata.get('type', 'unknown')
+                    language = metadata.get('language', 'unknown')
+                    
+                    # Count by file
+                    if filename not in debug_info['files']:
+                        debug_info['files'][filename] = 0
+                    debug_info['files'][filename] += 1
+                    
+                    # Count by entity type
+                    if entity_type not in debug_info['entity_types']:
+                        debug_info['entity_types'][entity_type] = 0
+                    debug_info['entity_types'][entity_type] += 1
+                    
+                    # Count by language
+                    if language not in debug_info['languages']:
+                        debug_info['languages'][language] = 0
+                    debug_info['languages'][language] += 1
+            
+            return debug_info
+            
+        except Exception as e:
+            return {"error": f"Debug failed: {e}"}
+    
+    def search_debug(self, query: str) -> Dict[str, Any]:
+        """Debug search results for a query."""
+        debug_info = {
+            "query": query,
+            "filename_detected": None,
+            "file_search_results": [],
+            "similarity_search_results": [],
+            "total_results": 0
+        }
+        
+        # Check filename detection
+        filename_match = self._extract_filename_from_query(query)
+        debug_info["filename_detected"] = filename_match
+        
+        if filename_match:
+            file_docs = self.search_by_filename(filename_match)
+            debug_info["file_search_results"] = [
+                {
+                    "filename": doc.metadata.get('filename', 'unknown'),
+                    "type": doc.metadata.get('type', 'unknown'),
+                    "entity_name": doc.metadata.get('entity_name', ''),
+                    "line_number": doc.metadata.get('line_number', ''),
+                    "content_preview": doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
+                }
+                for doc in file_docs
+            ]
+        
+        # Check similarity search
+        try:
+            docs = self.vectorstore.similarity_search(query, k=5)
+            debug_info["similarity_search_results"] = [
+                {
+                    "filename": doc.metadata.get('filename', 'unknown'),
+                    "type": doc.metadata.get('type', 'unknown'),
+                    "entity_name": doc.metadata.get('entity_name', ''),
+                    "line_number": doc.metadata.get('line_number', ''),
+                    "content_preview": doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
+                }
+                for doc in docs
+            ]
+        except Exception as e:
+            debug_info["similarity_search_error"] = str(e)
+        
+        debug_info["total_results"] = len(debug_info["file_search_results"]) + len(debug_info["similarity_search_results"])
+        
+        return debug_info
     
     def _load_enhanced_documents(self) -> List[Document]:
         """Load documents with enhanced metadata."""
@@ -542,66 +639,110 @@ Context: This {entity.type} is defined in {file_name} at line {entity.line_numbe
         
         return '\n'.join(formatted)
     
-    def search_similar(self, query: str, k: int = 5) -> List[Document]:
+    def search_similar(self, query: str, k: int = 3) -> List[Document]:
         """Search for similar code with enhanced context."""
         if not self.vectorstore:
             return []
         
-        # Get similar documents
-        docs = self.vectorstore.similarity_search(query, k=k)
+        # Check if query mentions a specific file
+        filename_match = self._extract_filename_from_query(query)
+        if filename_match:
+            print(f"🔍 Detected filename query: {filename_match}")
+            # First try to find the specific file
+            file_docs = self.search_by_filename(filename_match)
+            if file_docs:
+                print(f"✅ Found {len(file_docs)} documents for {filename_match}")
+                # Return only the most relevant documents to avoid token limits
+                return file_docs[:min(k, 3)]
+            else:
+                print(f"⚠️ File {filename_match} not found, falling back to similarity search")
         
-        # Enhance results with relationship context and metadata
-        enhanced_docs = []
-        for doc in docs:
-            enhanced_content = self._enhance_document_context(doc, query)
-            enhanced_docs.append(Document(
-                page_content=enhanced_content,
-                metadata=doc.metadata
-            ))
-        
-        # Add related entities based on query with enhanced metadata
-        related_entities = self._find_related_entities(query)
-        for entity in related_entities:
-            file_info = Path(entity.file_path)
-            entity_doc_content = f"""
+        # Regular similarity search
+        try:
+            docs = self.vectorstore.similarity_search(query, k=k)
+            print(f"🔍 Found {len(docs)} similar documents for query: {query[:50]}...")
+            
+            # Enhance results with relationship context and metadata (truncated)
+            enhanced_docs = []
+            for doc in docs:
+                enhanced_content = self._enhance_document_context(doc, query)
+                # Truncate content to avoid token limits
+                if len(enhanced_content) > 1000:
+                    enhanced_content = enhanced_content[:1000] + "..."
+                
+                enhanced_docs.append(Document(
+                    page_content=enhanced_content,
+                    metadata=doc.metadata
+                ))
+            
+            # Add related entities based on query with enhanced metadata (limited)
+            related_entities = self._find_related_entities(query)
+            for entity in related_entities[:2]:  # Limit to 2 related entities
+                file_info = Path(entity.file_path)
+                # Truncate entity content
+                entity_content = entity.content[:500] + "..." if len(entity.content) > 500 else entity.content
+                
+                entity_doc_content = f"""
 Entity: {entity.name}
 Type: {entity.type}
 File: {file_info.name}
 Line: {entity.line_number}
-Language: {self._detect_language(file_info.suffix)}
-AST Parsed: True
 
 Code Content:
-{entity.content}
+{entity_content}
 
 Docstring: {entity.docstring or 'No docstring'}
 Parameters: {entity.parameters or 'No parameters'}
-Dependencies: {entity.dependencies or 'No dependencies'}
-
-Context: This {entity.type} is defined in {file_info.name} at line {entity.line_number}.
-            """.strip()
+                """.strip()
+                
+                entity_doc = Document(
+                    page_content=entity_doc_content,
+                    metadata={
+                        'source': entity.file_path,
+                        'filename': file_info.name,
+                        'file_extension': file_info.suffix,
+                        'type': 'related_entity',
+                        'entity_name': entity.name,
+                        'entity_type': entity.type,
+                        'line_number': str(entity.line_number),
+                        'language': self._detect_language(file_info.suffix),
+                        'ast_parsed': 'True',
+                        'has_docstring': str(bool(entity.docstring)),
+                        'has_parameters': str(bool(entity.parameters)),
+                        'has_dependencies': str(bool(entity.dependencies)),
+                        'code_content': entity_content
+                    }
+                )
+                enhanced_docs.append(entity_doc)
             
-            entity_doc = Document(
-                page_content=entity_doc_content,
-                metadata={
-                    'source': entity.file_path,
-                    'filename': file_info.name,
-                    'file_extension': file_info.suffix,
-                    'type': 'related_entity',
-                    'entity_name': entity.name,
-                    'entity_type': entity.type,
-                    'line_number': str(entity.line_number),
-                    'language': self._detect_language(file_info.suffix),
-                    'ast_parsed': 'True',
-                    'has_docstring': str(bool(entity.docstring)),
-                    'has_parameters': str(bool(entity.parameters)),
-                    'has_dependencies': str(bool(entity.dependencies)),
-                    'code_content': entity.content  # Include the actual code content
-                }
-            )
-            enhanced_docs.append(entity_doc)
+            return enhanced_docs[:k]
+            
+        except Exception as e:
+            print(f"Error in similarity search: {e}")
+            return []
+    
+    def _extract_filename_from_query(self, query: str) -> Optional[str]:
+        """Extract filename from query if mentioned."""
+        import re
         
-        return enhanced_docs[:k]
+        # Look for common file patterns
+        patterns = [
+            r'(\w+\.py)',      # test.py
+            r'(\w+\.js)',      # test.js
+            r'(\w+\.ts)',      # test.ts
+            r'(\w+\.jsx)',     # test.jsx
+            r'(\w+\.tsx)',     # test.tsx
+            r'file\s+(\w+\.\w+)',  # file test.py
+            r'in\s+(\w+\.\w+)',    # in test.py
+            r'from\s+(\w+\.\w+)',  # from test.py
+        ]
+        
+        for pattern in patterns:
+            match = re.search(pattern, query, re.IGNORECASE)
+            if match:
+                return match.group(1)
+        
+        return None
     
     def _enhance_document_context(self, doc: Document, query: str) -> str:
         """Enhance document with relationship context."""
@@ -702,6 +843,114 @@ Context: This {entity.type} is defined in {file_info.name} at line {entity.line_
             if rel.source == entity_name or rel.target == entity_name:
                 relationships.append(rel)
         return relationships
+    
+    def _create_safe_metadata(self, metadata: Dict[str, Any]) -> Dict[str, str]:
+        """Create safe metadata that preserves important information."""
+        safe_metadata = {}
+        
+        # Essential fields that must be preserved
+        essential_fields = [
+            'source', 'filename', 'file_extension', 'type', 'entity_name', 
+            'entity_type', 'line_number', 'language', 'ast_parsed',
+            'has_docstring', 'has_parameters', 'has_dependencies'
+        ]
+        
+        for field in essential_fields:
+            value = metadata.get(field)
+            if value is not None:
+                # Convert to string and limit length
+                safe_metadata[field] = str(value)[:500]  # Limit to 500 chars
+        
+        # Add code content if available (truncated)
+        if 'code_content' in metadata:
+            content = metadata['code_content']
+            if content:
+                safe_metadata['code_content'] = str(content)[:1000]  # Limit to 1000 chars
+        
+        return safe_metadata
+    
+    def search_by_filename(self, filename: str) -> List[Document]:
+        """Search for documents by exact filename match."""
+        if not self.vectorstore:
+            return []
+        
+        try:
+            # Get all documents from the vector store
+            all_docs = self.vectorstore.get()
+            matching_docs = []
+            
+            if all_docs and 'documents' in all_docs:
+                for i, doc_content in enumerate(all_docs['documents']):
+                    metadata = all_docs['metadatas'][i] if 'metadatas' in all_docs else {}
+                    if metadata.get('filename') == filename:
+                        matching_docs.append(Document(
+                            page_content=doc_content,
+                            metadata=metadata
+                        ))
+            
+            # Limit results to avoid token limits - prioritize entities over raw code
+            if len(matching_docs) > 10:
+                # Sort by type priority: entities first, then code
+                entity_docs = [doc for doc in matching_docs if doc.metadata.get('type') == 'entity']
+                code_docs = [doc for doc in matching_docs if doc.metadata.get('type') != 'entity']
+                
+                # Take up to 8 entities and 2 code chunks
+                limited_docs = entity_docs[:8] + code_docs[:2]
+                print(f"📊 Limited {len(matching_docs)} documents to {len(limited_docs)} to avoid token limits")
+                return limited_docs
+            
+            return matching_docs
+        except Exception as e:
+            print(f"Error searching by filename: {e}")
+            return []
+    
+    def search_by_file_extension(self, extension: str) -> List[Document]:
+        """Search for documents by file extension."""
+        if not self.vectorstore:
+            return []
+        
+        try:
+            all_docs = self.vectorstore.get()
+            matching_docs = []
+            
+            if all_docs and 'documents' in all_docs:
+                for i, doc_content in enumerate(all_docs['documents']):
+                    metadata = all_docs['metadatas'][i] if 'metadatas' in all_docs else {}
+                    if metadata.get('file_extension') == extension:
+                        matching_docs.append(Document(
+                            page_content=doc_content,
+                            metadata=metadata
+                        ))
+            
+            return matching_docs
+        except Exception as e:
+            print(f"Error searching by file extension: {e}")
+            return []
+    
+    def get_file_content(self, filename: str) -> str:
+        """Get the complete content of a specific file."""
+        docs = self.search_by_filename(filename)
+        if not docs:
+            return f"File '{filename}' not found in the indexed codebase."
+        
+        # Combine all documents for this file, but limit total content
+        content_parts = []
+        total_length = 0
+        max_content_length = 3000  # Limit to 3000 characters
+        
+        for doc in docs:
+            doc_content = doc.page_content
+            if total_length + len(doc_content) > max_content_length:
+                # Truncate the last document
+                remaining_space = max_content_length - total_length
+                if remaining_space > 100:  # Only add if there's meaningful space
+                    content_parts.append(doc_content[:remaining_space] + "...")
+                break
+            
+            content_parts.append(doc_content)
+            total_length += len(doc_content)
+        
+        return "\n\n".join(content_parts)
     
     def _find_related_entities(self, query: str) -> List[CodeEntity]:
         """Find entities related to the query."""

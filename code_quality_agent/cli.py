@@ -148,6 +148,95 @@ def chat(path, model, enhanced):
 
 
 @cli.command()
+@click.argument('path')
+@click.option('--query', '-q', help='Debug specific query')
+def debug(path, query):
+    """Debug RAG system and show indexing information."""
+    try:
+        from .enhanced_rag_system import EnhancedCodeRAGSystem
+        
+        console.print(f"[yellow]🔍 Debugging RAG system for: {path}[/yellow]")
+        
+        # Initialize enhanced RAG system
+        enhanced_rag = EnhancedCodeRAGSystem(path)
+        
+        # Index the codebase
+        console.print("[blue]📊 Indexing codebase...[/blue]")
+        result = enhanced_rag.index_codebase()
+        
+        if "error" in result:
+            console.print(f"[red]❌ Error: {result['error']}[/red]")
+            return
+        
+        console.print(f"[green]✅ Indexing complete![/green]")
+        console.print(f"📄 Documents indexed: {result.get('documents_indexed', 0)}")
+        console.print(f"🧩 Entities found: {result.get('entities_found', 0)}")
+        console.print(f"🔗 Relationships found: {result.get('relationships_found', 0)}")
+        
+        # Show debug information
+        debug_info = enhanced_rag.debug_vector_store()
+        
+        if "error" in debug_info:
+            console.print(f"[red]❌ Debug error: {debug_info['error']}[/red]")
+            return
+        
+        # Create debug table
+        table = Table(title="RAG System Debug Information")
+        table.add_column("Metric", style="cyan")
+        table.add_column("Value", style="yellow")
+        
+        table.add_row("Total Documents", str(debug_info['total_documents']))
+        
+        # Files breakdown
+        files_text = "\n".join([f"{filename}: {count}" for filename, count in debug_info['files'].items()])
+        table.add_row("Files", files_text[:100] + "..." if len(files_text) > 100 else files_text)
+        
+        # Entity types breakdown
+        entity_types_text = "\n".join([f"{entity_type}: {count}" for entity_type, count in debug_info['entity_types'].items()])
+        table.add_row("Entity Types", entity_types_text[:100] + "..." if len(entity_types_text) > 100 else entity_types_text)
+        
+        # Languages breakdown
+        languages_text = "\n".join([f"{language}: {count}" for language, count in debug_info['languages'].items()])
+        table.add_row("Languages", languages_text[:100] + "..." if len(languages_text) > 100 else languages_text)
+        
+        console.print(table)
+        
+        # Debug specific query if provided
+        if query:
+            console.print(f"\n[blue]🔍 Debugging query: '{query}'[/blue]")
+            search_debug = enhanced_rag.search_debug(query)
+            
+            query_table = Table(title=f"Query Debug: '{query}'")
+            query_table.add_column("Field", style="cyan")
+            query_table.add_column("Value", style="yellow")
+            
+            query_table.add_row("Filename Detected", str(search_debug['filename_detected'] or 'None'))
+            query_table.add_row("File Search Results", str(len(search_debug['file_search_results'])))
+            query_table.add_row("Similarity Search Results", str(len(search_debug['similarity_search_results'])))
+            query_table.add_row("Total Results", str(search_debug['total_results']))
+            
+            console.print(query_table)
+            
+            # Show detailed results
+            if search_debug['file_search_results']:
+                console.print("\n[green]📁 File Search Results:[/green]")
+                for i, result in enumerate(search_debug['file_search_results'][:3], 1):
+                    console.print(f"{i}. {result['filename']}:{result['line_number']} ({result['type']})")
+                    console.print(f"   Entity: {result['entity_name']}")
+                    console.print(f"   Preview: {result['content_preview']}")
+            
+            if search_debug['similarity_search_results']:
+                console.print("\n[blue]🔍 Similarity Search Results:[/blue]")
+                for i, result in enumerate(search_debug['similarity_search_results'][:3], 1):
+                    console.print(f"{i}. {result['filename']}:{result['line_number']} ({result['type']})")
+                    console.print(f"   Entity: {result['entity_name']}")
+                    console.print(f"   Preview: {result['content_preview']}")
+        
+    except Exception as e:
+        console.print(f"[red]❌ Debug failed: {e}[/red]")
+
+
+@cli.command()
 @click.argument('query')
 @click.option('--limit', '-l', default=10, help='Number of repositories to return')
 def search(query, limit):
@@ -183,8 +272,6 @@ def search(query, limit):
         
     except Exception as e:
         console.print(f"[red]Error searching repositories: {e}[/red]")
-
-
 
 
 def _display_analysis_results(results):
