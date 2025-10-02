@@ -14,9 +14,9 @@ An AI-powered code analysis tool that provides comprehensive code quality insigh
 - **Free LLM Support**: Powered by Groq (free tier) with OpenAI fallback
 
 ## Images
-![screenshot](image/image4.png)
-![screenshot2](image/image2.png)
-![screenshot3](image/image3.png)
+![screenshot](https://github.com/Amrithesh-Kakkoth/CodeAnalyzer_Pro/blob/main/images/image.png?raw=true)
+![screenshot2](https://github.com/Amrithesh-Kakkoth/CodeAnalyzer_Pro/blob/main/images/image4.png?raw=true)
+![screenshot3](https://github.com/Amrithesh-Kakkoth/CodeAnalyzer_Pro/blob/main/images/image3.png?raw=true)
 
 ## 🚀 Quick Start
 
