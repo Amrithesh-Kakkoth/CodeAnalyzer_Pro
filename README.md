@@ -13,6 +13,11 @@ An AI-powered code analysis tool that provides comprehensive code quality insigh
 - **Docker Support**: Containerized deployment with memory optimization
 - **Free LLM Support**: Powered by Groq (free tier) with OpenAI fallback
 
+## Images
+![screenshot](image/image4.png)
+![screenshot2](image/image2.png)
+![screenshot3](image/image3.png)
+
 ## 🚀 Quick Start
 
 ### Quick Setup & Run
